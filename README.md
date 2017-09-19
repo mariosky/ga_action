@@ -83,3 +83,11 @@ Iterations Tuple:
 3. Best Individual
 4. Number of Function Evaluations
 
+
+```
+git clone https://github.com/mariosky/ga_action
+cd ga_action
+docker run --rm -v "$PWD:/tmp" openwhisk/python2action sh   -c "cd tmp; virtualenv virtualenv; source virtualenv/bin/activate; pip install -r requirements.txt;"
+
+zip -r ga_service.zip  __main__.py virtualenv ga_service.py bbobbenchmarks.py
+```
