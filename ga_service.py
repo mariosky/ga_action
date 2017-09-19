@@ -9,7 +9,7 @@ from deap import tools
 class GA_Worker:
     def __init__(self, conf):
         self.conf = conf
-        self.function = bn.dictbbob[self.conf['function']](int(self.conf['instance']))
+        self.function = bn.dictbbob[self.conf['problem']['function']](int(self.conf['problem']['instance']))
         self.F_opt = self.function.getfopt()
         self.function_evaluations = 0 #Is not needed in EvoWorkers, they dont know the number of FE
         self.deltaftarget = 1e-8
@@ -18,7 +18,7 @@ class GA_Worker:
         self.worker_uuid = uuid.uuid1()
         self.space = None
         self.params = None
-        self.evospace_sample = {'sample':conf['pop']}
+        self.evospace_sample = {'sample':conf['population']}
 
     def setup(self):
         creator.create("FitnessMin", base.Fitness, weights=(-1.0,))     #Minimizing Negative
@@ -26,7 +26,7 @@ class GA_Worker:
         self.toolbox = base.Toolbox()
         self.toolbox.register("attr_float", random.uniform, -5, 5)
         self.toolbox.register("individual", tools.initRepeat, creator.Individual,
-                              self.toolbox.attr_float, self.conf['dim'])
+                              self.toolbox.attr_float, self.conf['problem']['dim'])
         self.toolbox.register("population", tools.initRepeat, list, self.toolbox.individual)
         self.toolbox.register("evaluate", self.eval)
         self.toolbox.register("mate", tools.cxTwoPoint)
@@ -53,10 +53,9 @@ class GA_Worker:
         evals = []
         num_fe_first_sample = 0
         first_sample = True
-        print self.evospace_sample
 
         #random.seed(i)
-        CXPB, MUTPB, NGEN = random.uniform(.8,1), random.uniform(.1,.6), self.conf['NGEN']
+        CXPB, MUTPB, NGEN = random.uniform(.8,1), random.uniform(.1,.6), self.conf['algorithm']['iterations']
         pop = self.get()
 
 
@@ -69,7 +68,7 @@ class GA_Worker:
             ind.fitness.values = fit
 
         # print("  Evaluated %i individuals" % len(pop))
-        self.params = { 'CXPB':CXPB,'MUTPB':MUTPB, 'NGEN' : NGEN, 'sample_size': self.conf['sample_size'],
+        self.params = { 'CXPB':CXPB,'MUTPB':MUTPB, 'NGEN' : NGEN, 'sample_size': self.conf['population_size'],
                    'crossover':'cxTwoPoint', 'mutation':'mutGaussian, mu=0, sigma=0.5, indpb=0.05',
                    'selection':'tools.selTournament, tournsize=12','init':'random:[-5,5]'
                    }
@@ -121,10 +120,21 @@ class GA_Worker:
 
 
         best_ind = tools.selBest(pop, 1)[0]
+
+        final_pop = [{"chromosome": ind[:], "id": None,
+                     "fitness": {"DefaultContext": ind.fitness.values[0], "score": ind.fitness.values[0]}}
+                     for ind in pop]
+
+        self.conf.update({'iterations': evals, 'population': final_pop, 'best_individual': best_ind ,
+                          'fopt': self.function.getfopt()})
+
         if (best_ind.fitness.values[0] <= self.function.getfopt() + 1e-8):
-            return True, evals,  pop, best_ind
+            self.conf['best'] = True
         else:
-            return False,evals,  pop,  best_ind
+            self.conf['best'] = False
+
+        return self.conf
+
 
 
 

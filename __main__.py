@@ -18,12 +18,12 @@ def create_sample(conf):
     toolbox = base.Toolbox()
     toolbox.register("attr_float", random.uniform, -5, 5)
     toolbox.register("individual", tools.initRepeat, creator.Individual,
-                          toolbox.attr_float, conf['dim'])
+                          toolbox.attr_float, conf['problem']['dim'])
     toolbox.register("population", tools.initRepeat, list, toolbox.individual)
 
 
 
-    pop = toolbox.population(conf['sample_size'])
+    pop = toolbox.population(conf['population_size'])
     return [{"chromosome": ind[:], "id": None, "fitness": {"DefaultContext": 0.0}} for ind in pop]
 
 
@@ -31,7 +31,7 @@ def create_sample(conf):
 
 
 def main(args):
-    worker = GA_Worker(conf)
+    worker = GA_Worker(args)
     worker.setup()
     result = worker.run()
     return result
@@ -39,15 +39,18 @@ def main(args):
 
 if __name__ == "__main__":
 
-    args= {'id': 'dc74efeb-9d64-11e7-a2bd-54e43af0c111',
+    args= {'id': str(uuid.uuid1()),
            'problem': {
              'name': 'BBOB',
-             'function': 3,
-             'instance': 1,
-             'search_space': [-5, 5]
+             'function': 'FUNCTION' in os.environ and int(os.environ['FUNCTION']) or  3,
+             'instance': 'INSTANCE' in os.environ and int(os.environ['INSTANCE']) or  1,
+             'search_space': [-5, 5],
+             'dim': 'DIM' in os.environ and int(os.environ['DIM']) or  3,
+             'error': 1e-8
             },
 
         'population': [],
+        'population_size':'POPULATION_SIZE' in os.environ and int(os.environ['POPULATION_SIZE']) or 20,
 
         'experiment':
         {
@@ -58,7 +61,7 @@ if __name__ == "__main__":
 
      'algorithm': {
          'name': 'GA',
-         'iterations': 20,
+         'iterations': 5,
 
          'selection': {
              'type': 'tools.selTournament',
@@ -79,22 +82,22 @@ if __name__ == "__main__":
 
 
 
-
-    conf = {}
-    conf['function'] = 'FUNCTION' in os.environ and int(os.environ['FUNCTION']) or  3
-    conf['instance'] = 'INSTANCE' in os.environ and int(os.environ['INSTANCE']) or  1
-    conf['sample_size'] = 'SAMPLE_SIZE' in os.environ and int(os.environ['SAMPLE_SIZE']) or 300
-    conf['dim'] = 'DIM' in os.environ and int(os.environ['DIM']) or  5
-    conf['benchmark'] = 'BENCHMARK' in os.environ
-    conf['NGEN'] = 'NGEN' in os.environ and int(os.environ['NGEN']) or 20
-    conf['experiment_id'] = 'EXPERIMENT_ID' in os.environ and int(os.environ['EXPERIMENT_ID']) or str(uuid.uuid1())
-    print conf['experiment_id']
-    pop = create_sample(conf)
-
-    conf['pop'] = pop
+    pop = create_sample(args)
+    args['population'] = pop
 
 
+    FE = 0
 
+    new_pop =  main(args)
 
-    print main(conf)
+    for i  in range(2):
+
+        new_pop = main(new_pop)
+        print new_pop
+        if new_pop['best']:
+            break
+        for row in new_pop['iterations']:
+
+            FE+=row[3]
+            print new_pop['best'],row,new_pop['fopt'],FE
 
