@@ -48,6 +48,7 @@ if __name__ == "__main__":
     conf['benchmark'] = 'BENCHMARK' in os.environ
     conf['NGEN'] = 'NGEN' in os.environ and int(os.environ['NGEN']) or 20
     conf['experiment_id'] = 'EXPERIMENT_ID' in os.environ and int(os.environ['EXPERIMENT_ID']) or str(uuid.uuid1())
+    print conf['experiment_id']
     pop = create_sample(conf)
 
     conf['pop'] = pop
