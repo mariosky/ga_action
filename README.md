@@ -39,7 +39,7 @@ Input parameters example:
          'mutation':  { 'type': 'mutGaussian',
                        'mu': 0,
                        'sigma':0.5,
-                       'indpb'= 0.05,
+                       'indpb': 0.05,
                        'MUTPB':0.5
                       }
          }

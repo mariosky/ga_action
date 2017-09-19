@@ -39,6 +39,46 @@ def main(args):
 
 if __name__ == "__main__":
 
+    args= {'id': 'dc74efeb-9d64-11e7-a2bd-54e43af0c111',
+           'problem': {
+             'name': 'BBOB',
+             'function': 3,
+             'instance': 1,
+             'search_space': [-5, 5]
+            },
+
+        'population': [],
+
+        'experiment':
+        {
+             'experiment_id': 'dc74efeb-9d64-11e7-a2bd-54e43af0c111',
+             'owner': 'mariosky',
+             'type': 'benchmark'
+        },
+
+     'algorithm': {
+         'name': 'GA',
+         'iterations': 20,
+
+         'selection': {
+             'type': 'tools.selTournament',
+             'tournsize': 12
+         },
+         'crossover': {'type': 'cxTwoPoint',
+                       'CXPB': [0, .2]
+                       },
+
+         'mutation': {'type': 'mutGaussian',
+                      'mu': 0,
+                      'sigma': 0.5,
+                      'indpb' : 0.05,
+                       'MUTPB':0.5
+                       }
+        }
+     }
+
+
+
 
     conf = {}
     conf['function'] = 'FUNCTION' in os.environ and int(os.environ['FUNCTION']) or  3
