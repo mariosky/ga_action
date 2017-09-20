@@ -84,10 +84,49 @@ Iterations Tuple:
 4. Number of Function Evaluations
 
 
+## How to create the action in Vagrant
+
+First you log in to your vm
+```
+vagrant ssh
+```
+Clone the source:
 ```
 git clone https://github.com/mariosky/ga_action
-cd ga_action
+```
+Generate the vitualenv folder
+```
 docker run --rm -v "$PWD:/tmp" openwhisk/python2action sh   -c "cd tmp; virtualenv virtualenv; source virtualenv/bin/activate; pip install -r requirements.txt;"
-
+```
+Create the zip files with files needed
+```
 zip -r ga_service.zip  __main__.py virtualenv ga_service.py bbobbenchmarks.py
 ```
+Create or Update the action
+```
+wsk action create gaService --kind python:2 ga_service.zip
+wsk action update gaService --kind python:2 ga_service.zip
+```
+Get the url
+```
+wsk action get gaService  --url
+ok: got action gaService
+https://192.168.33.13/api/v1/namespaces/guest/actions/gaService
+```
+Get the auth data
+```
+wsk property get --auth
+whisk auth		23bc46b1-71f6-4ed5-8c54-816aa4f8c502:123zO3xZCLrMN6v2BKK1dXYFpXlPkccOFqm12CdAsMgRU4VrNZ9lyGVCGuMDGIwP
+```
+
+## Test from the host
+1. Again clone the code
+2. Create your virtualenv, pip install the *requests* library (only needed for client)
+3. Edit your ga_client
+
+## TO DO:
+1. Environment Variables for client
+2. Move client to other repo?
+
+
+
