@@ -6,6 +6,7 @@ import uuid
 
 
 def main(args):
+    print args
     worker = GA_Worker(args)
     worker.setup()
     result = worker.run()
