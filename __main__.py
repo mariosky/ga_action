@@ -5,31 +5,6 @@ import os
 import uuid
 
 
-def create_sample(conf):
-
-    import random
-    from deap import base
-    from deap import creator
-    from deap import tools
-
-    creator.create("FitnessMin", base.Fitness, weights=(-1.0,))  # Minimizing Negative
-    creator.create("Individual", list, typecode='d', fitness=creator.FitnessMin)
-
-    toolbox = base.Toolbox()
-    toolbox.register("attr_float", random.uniform, -5, 5)
-    toolbox.register("individual", tools.initRepeat, creator.Individual,
-                          toolbox.attr_float, conf['problem']['dim'])
-    toolbox.register("population", tools.initRepeat, list, toolbox.individual)
-
-
-
-    pop = toolbox.population(conf['population_size'])
-    return [{"chromosome": ind[:], "id": None, "fitness": {"DefaultContext": 0.0}} for ind in pop]
-
-
-
-
-
 def main(args):
     worker = GA_Worker(args)
     worker.setup()
@@ -38,6 +13,25 @@ def main(args):
 
 
 if __name__ == "__main__":
+    def create_sample(conf):
+
+        import random
+        from deap import base
+        from deap import creator
+        from deap import tools
+
+        creator.create("FitnessMin", base.Fitness, weights=(-1.0,))  # Minimizing Negative
+        creator.create("Individual", list, typecode='d', fitness=creator.FitnessMin)
+
+        toolbox = base.Toolbox()
+        toolbox.register("attr_float", random.uniform, -5, 5)
+        toolbox.register("individual", tools.initRepeat, creator.Individual,
+                         toolbox.attr_float, conf['problem']['dim'])
+        toolbox.register("population", tools.initRepeat, list, toolbox.individual)
+
+        pop = toolbox.population(conf['population_size'])
+        return [{"chromosome": ind[:], "id": None, "fitness": {"DefaultContext": 0.0}} for ind in pop]
+
 
     args= {'id': str(uuid.uuid1()),
            'problem': {
