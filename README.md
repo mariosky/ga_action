@@ -128,9 +128,29 @@ git fetch
 2. Create your virtualenv, pip install the *requests* library (only needed for client)
 3. Edit your ga_client
 
+## Results
+First the keys of the result are shown:
+```
+[u'fopt', u'algorithm', u'best_individual', u'experiment', u'population_size', u'iterations', u'problem', u'id', u'best', u'population']
+```
+
+Then the client prints the results of each iteration
+
+```
+[0, -422.3189885289348, [-2.3750799310197834, 0.26363257691378017, 1.9725786083712151], 17] -462.09
+[1, -450.63219848002547, [-2.3750799310197834, 2.8617458011276007, 1.9725786083712151], 16] -462.09
+[2, -450.63219848002547, [-2.3750799310197834, 2.8617458011276007, 1.9725786083712151], 20] -462.09
+[3, -450.63219848002547, [-2.3750799310197834, 2.8617458011276007, 1.9725786083712151], 18] -462.09
+[4, -450.7095245606381, [-2.3090028418986184, 2.8617458011276007, 1.9725786083712151], 15] -462.09
+```
+[<iteration number>, <best fitness>,<best solution>, <number of FE>] <function optima>
+
+Finally the new population is printed
+
 ## TO DO:
 1. Environment Variables for client
 2. Move client to other repo?
+
 
 
 

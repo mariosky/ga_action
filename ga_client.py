@@ -1,7 +1,6 @@
 import requests
 import os
 import uuid
-import json
 
 def create_sample(conf):
 
@@ -86,7 +85,13 @@ if __name__ == "__main__":
 
     url = APIHOST + '/api/v1/namespaces/' + NAMESPACE + '/actions/' + action
     response = requests.post(url, json=args, params={'blocking': 'true'}, verify=False)
-    print(response.json())
+    result = response.json()
+    print result['response']['result'].keys()
+    for row in result['response']['result']['iterations']:
+        print row, result['response']['result']['fopt']
+
+    print result['response']['result']['population']
+
 
 
 # Now Works!
