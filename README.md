@@ -153,4 +153,4 @@ Finally the new population is printed
 
 
 
-
+bx wsk action create ga_service --kind python:2 ga_service.zip
