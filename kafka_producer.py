@@ -15,7 +15,6 @@ secret_opts = {}
 with open(secret_credentials) as json_data:
     secret_opts = json.load(json_data)
 
-print(secret_opts)
 
 
 
