@@ -1,12 +1,16 @@
 from ga_service import *
+import json
 
+## Prototipe implemantation as an OpenWhisk action,
+## This function is triggered by MessageHub
 
-import os
-import uuid
+def main(kwargs):
+    # Read from MeesageHub
+    args = kwargs["messages"][0]["value"]
 
-
-def main(args):
     worker = GA_Worker(args)
     worker.setup()
     result = worker.run()
-    return result
+
+    # Return with a format for writing to MessageHub
+    return { 'value' : json.dumps(result)}

@@ -2,8 +2,8 @@
 # brew install librdkafka
 # pip install confluent-kafka
 
-
 import confluent_kafka
+
 import json
 
 # Please add your own secret_credentials.json, this is
@@ -41,21 +41,13 @@ def on_delivery( err, msg):
         else:
             print('Message produced, offset: {0}'.format(msg.offset()))
 
+# Producer
+
 
 
 producer.produce('populations-topic', args_json, 'key', -1, on_delivery)
 producer.flush()
 
-
-
-
-
-
-
-
-service = "amqps://amqp02-prod02.messagehub.services.eu-gb.bluemix.net:5671"
-mhuser = "QLsAUGHHiekiH536"
-mhpassword = "UWLDNRAWXWFMqMSG9D6mZkOKQ18ZRDdm"
 
 
 
