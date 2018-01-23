@@ -1,5 +1,7 @@
 # ga_action
 
+This is a general framework for carrying out evolution in a serverless framework. It runs, in principle, in a Bluemix environment, but this is actually vendor implementation of open source frameworks such as Kafka and OpenWhisk.
+
 Please install requirements.txt to test __main()__ 
 
 
@@ -52,7 +54,7 @@ Input parameters example:
 
 
 
-Output same as input with a new evolved population plus:
+Output is the same as input with a new evolved population plus:
 
 
 ```
