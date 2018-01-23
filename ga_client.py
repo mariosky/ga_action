@@ -20,9 +20,6 @@ def create_sample(conf):
                           toolbox.attr_float, conf['problem']['dim'])
     toolbox.register("population", tools.initRepeat, list, toolbox.individual)
 
-
-
-
     pop = toolbox.population(conf['population_size'])
     return [{"chromosome": ind[:], "id": None, "fitness": {"DefaultContext": 0.0}} for ind in pop]
 
@@ -90,7 +87,6 @@ if __name__ == "__main__":
     user_pass = AUTH_KEY.split(':')
 
     response = requests.post(url, json=PARAMS, params={'blocking': BLOCKING, 'result': RESULT}, auth=(user_pass[0], user_pass[1]))
-
 
     result = response.json()
 
