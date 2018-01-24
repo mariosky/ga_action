@@ -24,8 +24,8 @@ _opts = {
 'sasl.mechanisms': 'PLAIN',
 'sasl.username': secret_opts['user'],
 'sasl.password': secret_opts['password'],
-'api.version.request': True
-}
+'api.version.request': True,
+    'group.id': 'mygroup'}
 
 
 
@@ -52,13 +52,13 @@ while running:
         print('Received message: %s' % msg.value().decode('utf-8'))
 
         producer.produce('populations-topic', msg.value().decode('utf-8'), 'key', -1, on_delivery)
-        producer.flush()
+
 
 
     elif msg.error().code() != confluent_kafka.KafkaError._PARTITION_EOF:
         print(msg.error())
         running = False
-
+producer.flush()
 print ("Bye")
 c.close()
 
