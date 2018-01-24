@@ -6,7 +6,7 @@ import json
 
 def main(kwargs):
     # Read from MeesageHub
-    args = kwargs["messages"][0]["value"]
+    args = kwargs
 
     worker = GA_Worker(args)
     worker.setup()
