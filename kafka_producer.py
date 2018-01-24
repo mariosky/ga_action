@@ -43,7 +43,7 @@ def on_delivery( err, msg):
 # Producer
 
 
-for i in range(3):
+for i in range(2):
     producer.produce('populations-topic', args_json, 'key', -1, on_delivery)
 producer.flush()
 
