@@ -3,7 +3,6 @@
 # pip install confluent-kafka
 
 import confluent_kafka
-
 import json
 
 # Please add your own secret_credentials.json, this is
@@ -26,7 +25,6 @@ _opts = {
 'sasl.password': secret_opts['password'],
 'api.version.request': True,
     'group.id': 'mygroup'}
-
 
 
 def on_delivery( err, msg):

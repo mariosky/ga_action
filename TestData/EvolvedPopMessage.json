@@ -1,0 +1,97 @@
+{
+  "fopt": -462.09,
+  "algorithm": {
+    "mutation": {
+      "mu": 0,
+      "sigma": 0.5,
+      "indpb": 0.05,
+      "MUTPB": 0.5,
+      "type": "mutGaussian"
+    },
+    "selection": {
+      "type": "tools.selTournament",
+      "tournsize": 12
+    },
+    "name": "GA",
+    "iterations": 100,
+    "crossover": {
+      "type": "cxTwoPoint",
+      "CXPB": [
+        0,
+        0.2
+      ]
+    }
+  },
+  "best_individual": [
+    -2.342070460747002,
+    2.299268557561391,
+    2.2122373273264437
+  ],
+  "experiment": {
+    "owner": "mariosky",
+    "type": "benchmark",
+    "experiment_id": "dc74efeb-9d64-11e7-a2bd-54e43af0c111"
+  },
+  "population_size": 20,
+  "iterations": [
+    [
+      0,
+      -462.08568529072301,
+      [
+        -2.342070460747002,
+        2.299268557561391,
+        2.2122373273264437
+      ],
+      18
+    ],
+    [
+      1,
+      -462.08568529072301,
+      [
+        -2.342070460747002,
+        2.299268557561391,
+        2.2122373273264437
+      ],
+      16
+    ]
+  ],
+  "problem": {
+    "function": 3,
+    "dim": 3,
+    "name": "BBOB",
+    "search_space": [
+      -5,
+      5
+    ],
+    "instance": 1,
+    "error": 1e-08
+  },
+  "id": "6d40f0c2-fa8d-11e7-b31b-003ee1bf3fb9",
+  "best": false,
+  "population": [
+    {
+      "id": null,
+      "chromosome": [
+        -2.342070460747002,
+        2.299268557561391,
+        2.2122373273264437
+      ],
+      "fitness": {
+        "DefaultContext": -462.08568529072301,
+        "score": -462.08568529072301
+      }
+    },
+    {
+      "id": null,
+      "chromosome": [
+        -2.342070460747002,
+        2.299268557561391,
+        2.2122373273264437
+      ],
+      "fitness": {
+        "DefaultContext": -462.08568529072301,
+        "score": -462.08568529072301
+      }
+    }
+  ]
+}

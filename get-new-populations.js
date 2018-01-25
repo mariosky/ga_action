@@ -1,7 +1,6 @@
 var openwhisk = require('openwhisk');
 var request = require('request');
-var async = require('async');
-var fs = require('fs');
+
 
 
 
@@ -22,51 +21,43 @@ function main(params){
 
         var tasks = params.messages.map(function(message) {
             console.log("Found", message.value.experiment.owner);
-            return function(callback) {
-              asyncCallGAAction(
-                "testPromise",
-                message.value,
-                callback
-              );
-            };
-          });
+            actionName = "testPromise";
+            params = message.value;
 
-          async.parallel(tasks, function(err, result) {
-            if (err) {
-              console.log("Error", err);
-              reject(err);
-            } else {
-              resolve({
-                status: "Success"
-              });
-            }
-          });
+            return new Promise(function (actionName, params, resolve, reject) {
+                console.log("Calling", actionName);
+                var wsk = openwhisk();
+                return new Promise(function (resolve, reject) {
+                    wsk.actions.invoke(actionName, kwargs).then(
+                        function (activation) {
+                            console.log(actionName, "[activation]", activation);
+                            resolve(activation);
+                        }).catch(
+                        function (error) {
+                            console.log(actionName, "[error]", error);
+                            reject(error);
+                        });
 
+                });
 
-    });
+            });
+        });
 
-}
+        return Promises.All(tasks, function(err, result) {
+                if (err) {
+                    console.log("Error", err);
+                    reject(err);
+                } else {
+                    resolve({
+                    status: "Success"
+                    });
+            }}).then(function(values) {
+                      console.log(values);
+                    });
 
-function asyncCallGAAction(actionName, kwargs, callback) {
-  console.log("Calling", actionName);
-
-  var wsk = openwhisk();
-
-  return new Promise(function(resolve, reject) {
-
-      
-    wsk.actions.invoke(actionName, kwargs).then(
-      function(activation) {
-        console.log(actionName, "[activation]", activation);
-        resolve(activation);
-      }
-    ).catch(
-      function(error) {
-        console.log(actionName, "[error]", error);
-        reject(error);
-      }
-    );
-  });
+});
 
 }
+
+
 
