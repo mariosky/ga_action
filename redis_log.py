@@ -18,7 +18,7 @@ r = redis.Redis(host=HOST, port=PORT)
 
 
 def log_to_redis_coco(population):
-    log_name = 'log:test_pop:' + population['experiment']["experiment_id"]
+    log_name = 'log:test_pop:' + str(population['experiment']["experiment_id"])
     r.lpush(log_name, json.dumps(get_benchmark_data(population)))
 
 

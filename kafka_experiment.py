@@ -1,10 +1,11 @@
 
 import kafka_producer
+import kafka_controller
 
 
-EXPERIMENT_ID = 13
+EXPERIMENT_ID = 1022
 FUNCTIONS = (3,)
-DIMENSIONS = (3,)
+DIMENSIONS = (2,3,5,10,20)
 
 # For paper
 #INSTANCES = range(1,6)+range(41, 51)
@@ -54,10 +55,8 @@ conf = {
 for function in FUNCTIONS:
     for dim in DIMENSIONS:
         print "DIM", dim
-        print "instance:",
-
-        for instance in range(1, 3):
-            print instance,
+        for instance in INSTANCES:
+            print "instance:", instance
 
             env = {"problem":
                         {"name": "BBOB",
@@ -65,22 +64,32 @@ for function in FUNCTIONS:
                           "error": 1e-8,
                           "function": function,
                           "dim": dim,
-                          "search_space": [-5, 5]},
+                          "search_space": [-5, 5],
+                          "problem_id": "%s-%s-%s-%s" % ( EXPERIMENT_ID, function, instance, dim ),
+                          "max_iterations": conf[dim]['MAX_ITERATIONS'] },
              "population": [],
-             "population_size": conf['POP_SIZE'],
+             "population_size": conf[dim]['POP_SIZE'],
              "id": "1",
              "algorithm": {"crossover": {"type": "cxTwoPoint", "CXPB": [0, 0.2]}, "name": "GA",
                            "mutation": {"MUTPB": 0.5, "indpb": 0.05, "sigma": 0.5, "type": "mutGaussian", "mu": 0},
                            "selection": {"type": "tools.selTournament", "tournsize": 12},
-                           "iterations": conf['NGEN']},
+                           "iterations": conf[dim]['NGEN']},
              "experiment":
                  {"owner": "mariosky", "type": "benchmark", "experiment_id": EXPERIMENT_ID}}
 
             #Initialize pops
-            kafka_messages = new_populations(env, conf['MESSAGES_HUB_GA'] , conf['POP_SIZE'],env["problem"]["dim"], env["problem"]["search_space"][0], env["problem"]["search_space"][1])
+            kafka_messages = new_populations(env, conf[dim]['MESSAGES_HUB_GA'] , conf[dim]['POP_SIZE'],env["problem"]["dim"], env["problem"]["search_space"][0], env["problem"]["search_space"][1])
 
             #Initialize experiment?
             kafka_producer.send_messages(kafka_messages,'populations-topic')
+            print "Messages Done"
+            print "Begin Experiment Loop"
+            kafka_controller.experiment(env)
+            print "Done"
+
+
+
+
 
 
 

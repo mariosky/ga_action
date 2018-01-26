@@ -6,10 +6,11 @@ import confluent_kafka
 
 import json
 
+
 # Please add your own secret_credentials.json, this is
 # generated in IBM CLou on the Service Credentials tab on MessageHub Manager
 
-secret_credentials = "/Users/mariosky/secret_credentials.json"
+secret_credentials = "/Users/mario/secret_credentials.json"
 secret_opts = {}
 
 with open(secret_credentials) as json_data:
@@ -41,7 +42,7 @@ def on_delivery( err, msg):
 
 def send_messages( message_list, topic = 'populations-topic' ):
     for pop in message_list:
-        producer.produce(topic, pop, 'key', -1, on_delivery)
+        producer.produce(topic, json.dumps(pop), 'key', -1, on_delivery)
     producer.flush()
 
 
