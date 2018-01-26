@@ -3,9 +3,9 @@ import kafka_producer
 import kafka_controller
 
 
-EXPERIMENT_ID = 1022
+EXPERIMENT_ID = 1025
 FUNCTIONS = (3,)
-DIMENSIONS = (2,3,5,10,20)
+DIMENSIONS = (2,)
 
 # For paper
 #INSTANCES = range(1,6)+range(41, 51)

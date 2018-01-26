@@ -6,6 +6,7 @@ import confluent_kafka
 import json
 
 import redis_log
+from deap.tools.crossover import cxOnePoint
 
 
 REDIS_LOG = True
@@ -13,11 +14,16 @@ REDIS_LOG = True
 # Please add your own secret_credentials.json, this is
 # generated in IBM CLou on the Service Credentials tab on MessageHub Manager
 
-secret_credentials = "/Users/mario/secret_credentials.json"
+secret_credentials = "/Users/mariosky/secret_credentials.json"
 secret_opts = {}
 
 with open(secret_credentials) as json_data:
     secret_opts = json.load(json_data)
+
+
+from collections import deque
+queue = deque()
+
 
 
 
@@ -54,6 +60,7 @@ def experiment(env):
     # Counter for experiments, some times we receive from earlier problems
     # Set to zero if not exists
     problem_id = env["problem"]["problem_id"]
+    queue.clear()
 
     running = True
 
@@ -68,11 +75,26 @@ def experiment(env):
                 count+=1
                 print count, pop["problem"]["problem_id"]
 
+                # Get inline
+                queue.appendleft(pop)
+
                 #TO DO: CROSSOVER POPULATION HERE
+                # If there is another pop in the queue
+                if len(queue) > 1:
+                    # get other
+                    other = queue.pop()
+                    #crossover
+                    print "---",len(queue)
+                    print pop['population']
+                    print other['population']
+
+                    cxOnePoint(pop['population'], other['population'])
+                    print pop['population']
+                    print other['population']
 
                 # Only return if we are in the same experiment
                 producer.produce('populations-topic', msg.value().decode('utf-8'), 'key', -1, on_delivery)
-
+                producer.produce('populations-topic', json.dumps(pop ), 'key', -1, on_delivery)
             else:
                 print "old", pop["problem"]["problem_id"]
 

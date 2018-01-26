@@ -5,7 +5,7 @@ import confluent_kafka
 import json
 import redis_log
 
-secret_credentials = "/Users/mario/secret_credentials.json"
+secret_credentials = "/Users/mariosky/secret_credentials.json"
 REDIS_LOG = False
 secret_opts = {}
 
