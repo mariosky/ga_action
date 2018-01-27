@@ -3,7 +3,7 @@ import kafka_producer
 import kafka_controller
 
 
-EXPERIMENT_ID = 7777
+EXPERIMENT_ID = 66666
 FUNCTIONS = (3,)
 DIMENSIONS = (2,3,5,10,20)
 

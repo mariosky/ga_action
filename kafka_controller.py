@@ -4,6 +4,7 @@
 
 import confluent_kafka
 import json
+import random
 
 import redis_log
 from deap.tools.crossover import cxOnePoint
@@ -23,6 +24,19 @@ with open(secret_credentials) as json_data:
 
 from collections import deque
 queue = deque()
+
+def cxBestFromEach(pop1, pop2, key = lambda p: p['fitness']['score'], reverse = True):
+    pop1.sort(key=key, reverse=reverse)
+    pop2.sort(key=key, reverse=reverse)
+    size = min(len(pop1), len(pop2))
+
+    cxpoint = (size - 1) / 2
+
+    pop1[cxpoint:] = pop2[:cxpoint+2]
+
+    return pop1
+
+
 
 
 
@@ -84,16 +98,12 @@ def experiment(env):
                     # get other
                     other = queue.pop()
                     #crossover
-                    print "---",len(queue)
-                    print pop['population']
-                    print other['population']
 
-                    cxOnePoint(pop['population'], other['population'])
-                    print pop['population']
-                    print other['population']
+                    #cxOnePoint(pop['population'], other['population'])
+                    pop['population'] = cxBestFromEach(pop['population'], other['population'])
+
 
                 # Only return if we are in the same experiment
-                #producer.produce('populations-topic', msg.value().decode('utf-8'), 'key', -1, on_delivery)
                 producer.produce('populations-topic', json.dumps(pop ), 'key', -1, on_delivery)
             else:
                 print "old", pop["problem"]["problem_id"]
