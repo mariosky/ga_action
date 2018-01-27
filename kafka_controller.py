@@ -14,7 +14,7 @@ REDIS_LOG = True
 # Please add your own secret_credentials.json, this is
 # generated in IBM CLou on the Service Credentials tab on MessageHub Manager
 
-secret_credentials = "/Users/mariosky/secret_credentials.json"
+secret_credentials = "/Users/mario/secret_credentials.json"
 secret_opts = {}
 
 with open(secret_credentials) as json_data:
@@ -93,7 +93,7 @@ def experiment(env):
                     print other['population']
 
                 # Only return if we are in the same experiment
-                producer.produce('populations-topic', msg.value().decode('utf-8'), 'key', -1, on_delivery)
+                #producer.produce('populations-topic', msg.value().decode('utf-8'), 'key', -1, on_delivery)
                 producer.produce('populations-topic', json.dumps(pop ), 'key', -1, on_delivery)
             else:
                 print "old", pop["problem"]["problem_id"]

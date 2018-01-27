@@ -10,7 +10,7 @@ import json
 # Please add your own secret_credentials.json, this is
 # generated in IBM CLou on the Service Credentials tab on MessageHub Manager
 
-secret_credentials = "/Users/mariosky/secret_credentials.json"
+secret_credentials = "/Users/mario/secret_credentials.json"
 secret_opts = {}
 
 with open(secret_credentials) as json_data:
