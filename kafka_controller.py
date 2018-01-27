@@ -39,12 +39,12 @@ _opts = {
 
 
 def on_delivery( err, msg):
-        if err:
-            print('Delivery report: Failed sending message {0}'.format(msg.value()))
-            print(err)
+    if err:
+        print('Delivery report: Failed sending message {0}'.format(msg.value()))
+        print(err)
             # We could retry sending the message
-        else:
-            print('offset: {0}'.format(msg.offset())),
+    else:
+        print('offset: {0}'.format(msg.offset())),
 
 
 
@@ -66,7 +66,7 @@ def experiment(env):
 
 
     while running and count <= max_messages:
-        msg = c.poll()
+        msg = c.poll() # Poll the message queue
         if not msg.error():
 
             pop = json.loads( msg.value().decode('utf-8'))
@@ -108,11 +108,3 @@ def experiment(env):
     producer.flush()
     print ("Bye")
     c.close()
-
-
-
-
-
-
-
-
