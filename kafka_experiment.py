@@ -3,7 +3,7 @@ import kafka_producer
 import kafka_controller
 
 
-EXPERIMENT_ID = 66666
+EXPERIMENT_ID = 7
 FUNCTIONS = (3,)
 DIMENSIONS = (2,3,5,10,20)
 
@@ -66,13 +66,13 @@ for function in FUNCTIONS:
                           "dim": dim,
                           "search_space": [-5, 5],
                           "problem_id": "%s-%s-%s-%s" % ( EXPERIMENT_ID, function, instance, dim ),
-                          "max_iterations": conf[dim]['MAX_ITERATIONS'] },
+                          "max_iterations": conf[dim]['MAX_ITERATIONS'] * conf[dim]['MESSAGES_HUB_GA'] },
              "population": [],
              "population_size": conf[dim]['POP_SIZE'],
              "id": "1",
              "algorithm": {"crossover": {"type": "cxTwoPoint", "CXPB": [0, 0.2]}, "name": "GA",
                            "mutation": {"MUTPB": 0.5, "indpb": 0.05, "sigma": 0.5, "type": "mutGaussian", "mu": 0},
-                           "selection": {"type": "tools.selTournament", "tournsize": 12},
+                           "selection": {"type": "tools.selTournament", "tournsize": 2},
                            "iterations": conf[dim]['NGEN']},
              "experiment":
                  {"owner": "mariosky", "type": "benchmark", "experiment_id": EXPERIMENT_ID}}

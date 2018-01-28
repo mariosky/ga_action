@@ -25,9 +25,9 @@ with open(secret_credentials) as json_data:
 from collections import deque
 queue = deque()
 
-def cxBestFromEach(pop1, pop2, key = lambda p: p['fitness']['score'], reverse = True):
-    pop1.sort(key=key, reverse=reverse)
-    pop2.sort(key=key, reverse=reverse)
+def cxBestFromEach(pop1, pop2, key = lambda p: p['fitness']['score']):
+    pop1.sort(key=key)
+    pop2.sort(key=key)
     size = min(len(pop1), len(pop2))
 
     cxpoint = (size - 1) / 2
