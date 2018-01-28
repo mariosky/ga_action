@@ -17,7 +17,6 @@ class GA_Worker:
         self.FC = 0
         self.worker_uuid = uuid.uuid1()
         self.space = None
-        self.params = None
         self.evospace_sample = {'sample':conf['population']}
 
     def setup(self):
@@ -67,11 +66,6 @@ class GA_Worker:
         for ind, fit in zip(pop, fitnesses):
             ind.fitness.values = fit
 
-        # print("  Evaluated %i individuals" % len(pop))
-        self.params = { 'CXPB':CXPB,'MUTPB':MUTPB, 'NGEN' : NGEN, 'sample_size': self.conf['population_size'],
-                   'crossover':'cxTwoPoint', 'mutation':'mutGaussian, mu=0, sigma=0.5, indpb=0.05',
-                   'selection':'tools.selTournament, tournsize=2','init':'random:[-5,5]'
-                   }
 
         # Begin the evolution
         for g in range(NGEN):
