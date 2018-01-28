@@ -30,7 +30,7 @@ class GA_Worker:
         self.toolbox.register("evaluate", self.eval)
         self.toolbox.register("mate", tools.cxTwoPoint)
         self.toolbox.register("mutate", tools.mutGaussian, mu=0, sigma=0.5, indpb=0.05)
-        self.toolbox.register("select", tools.selTournament, tournsize=12)
+        self.toolbox.register("select", tools.selTournament, tournsize=self.conf['algorithm']['selection']['tournsize'])
 
     def eval(self, individual):
         return  self.function(individual),
