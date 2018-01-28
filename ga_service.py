@@ -70,7 +70,7 @@ class GA_Worker:
         # print("  Evaluated %i individuals" % len(pop))
         self.params = { 'CXPB':CXPB,'MUTPB':MUTPB, 'NGEN' : NGEN, 'sample_size': self.conf['population_size'],
                    'crossover':'cxTwoPoint', 'mutation':'mutGaussian, mu=0, sigma=0.5, indpb=0.05',
-                   'selection':'tools.selTournament, tournsize=12','init':'random:[-5,5]'
+                   'selection':'tools.selTournament, tournsize=2','init':'random:[-5,5]'
                    }
 
         # Begin the evolution

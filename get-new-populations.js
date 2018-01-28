@@ -2,8 +2,6 @@ var openwhisk = require('openwhisk');
 var request = require('request');
 
 
-
-
 /**
   *
   * main() will be run when you invoke this action
