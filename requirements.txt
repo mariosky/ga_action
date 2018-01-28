@@ -1,6 +1,2 @@
 deap==1.0.1
 numpy==1.13.1
-cloudant==2.7.0
-pykafka==2.7.0
-confluent-kafka==0.11.0
-requests==2.18.4
