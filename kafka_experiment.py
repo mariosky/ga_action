@@ -1,9 +1,9 @@
 
 import kafka_producer
 import kafka_controller
+import time
 
-
-EXPERIMENT_ID = 7
+EXPERIMENT_ID = int(time.time())
 FUNCTIONS = (3,)
 DIMENSIONS = (2,3,5,10,20)
 
