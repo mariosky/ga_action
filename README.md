@@ -2,12 +2,11 @@
 
 This is a general framework for carrying out evolution in a serverless framework. It runs, in principle, in a Bluemix environment, but this is actually vendor implementation of open source frameworks such as Kafka and OpenWhisk.
 
-Please install requirements.txt to test __main()__ 
+Please install requirements.txt to test __main()__
 
 
 Input parameters example:
-
-```
+```python
  args= {'id': str(uuid.uuid1()),
            'problem': {
              'name': 'BBOB',
@@ -52,12 +51,8 @@ Input parameters example:
 ```
 
 
-
-
 Output is the same as input with a new evolved population plus:
-
-
-```
+```json
  {
     'diversity' :
             {
@@ -76,8 +71,6 @@ Output is the same as input with a new evolved population plus:
 
 ```
 
-
-
 Iterations Tuple:
 
 1. Number of iteration
@@ -85,20 +78,23 @@ Iterations Tuple:
 3. Best Individual
 4. Number of Function Evaluations
 
-
 ## How to create the action in Vagrant
 
 First you log in to your vm
 ```
 vagrant ssh
 ```
-Clone the source:
+Clone the source
 ```
 git clone https://github.com/mariosky/ga_action
 ```
-Generate the vitualenv folder
+Change directory to ga_service
 ```
-docker run --rm -v "$PWD:/tmp" openwhisk/python2action sh   -c "cd tmp; virtualenv virtualenv; source virtualenv/bin/activate; pip install -r requirements.txt;"
+cd ga_service
+```
+Generate the vitualenv directory
+```
+docker run --rm -v "$PWD:/tmp" openwhisk/python2action sh -c "cd tmp; virtualenv virtualenv; source virtualenv/bin/activate; pip install -r requirements.txt;"
 ```
 Create the zip files with files needed
 ```
@@ -111,7 +107,7 @@ wsk action update gaService --kind python:2 ga_service.zip
 ```
 Get the url
 ```
-wsk action get gaService  --url
+wsk action get gaService --url
 ok: got action gaService
 https://192.168.33.13/api/v1/namespaces/guest/actions/gaService
 ```
@@ -127,17 +123,29 @@ git fetch
 
 ## Test from the host
 1. Again clone the code
-2. Create your virtualenv, pip install the *requests* library (only needed for client)
+2. Create your virtualenv, pip install the *aiohttp* library (only needed for client)
 3. Edit your ga_client
 
+## Using the client
+The client uses the *asyncio* library which handles asynchronous processes so it requires *python 3* to be executed. You can input different parameters for the script such as the number of request, verbose mode, timeouts, and algorithm specific parameters.
+
+To get a full list of the options you can run the command:
+```
+python3 ga_client.py --help
+```
+
 ## Results
-First the keys of the result are shown:
+If the *--only-population* flag is set then it returns an array of objects which represent each individual with it's id, chromosome and fitness.
+```json
+[{'id': None, 'chromosome': [-3.0208012286451758, -1.9901786287762588, 0.4746940069424692], 'fitness': {'DefaultContext': -328.99633706375687, 'score': -328.99633706375687}}, {'id': None, 'chromosome': [-3.0208012286451758, -1.9901786287762588, 0.4746940069424692], 'fitness': {'DefaultContext': -328.99633706375687, 'score': -328.99633706375687}}]
+```
+
+If the *--only-population* flag is not set then it returns an array of objects which contain the following keys:
 ```
 [u'fopt', u'algorithm', u'best_individual', u'experiment', u'population_size', u'iterations', u'problem', u'id', u'best', u'population']
 ```
 
-Then the client prints the results of each iteration
-
+The results of each iteration look like this:
 ```
 [0, -422.3189885289348, [-2.3750799310197834, 0.26363257691378017, 1.9725786083712151], 17] -462.09
 [1, -450.63219848002547, [-2.3750799310197834, 2.8617458011276007, 1.9725786083712151], 16] -462.09
@@ -145,14 +153,13 @@ Then the client prints the results of each iteration
 [3, -450.63219848002547, [-2.3750799310197834, 2.8617458011276007, 1.9725786083712151], 18] -462.09
 [4, -450.7095245606381, [-2.3090028418986184, 2.8617458011276007, 1.9725786083712151], 15] -462.09
 ```
-[<iteration number>, <best fitness>,<best solution>, <number of FE>] <function optima>
-
-Finally the new population is printed
+```
+[iteration number, best fitness, best solution, number of FE] function optima
+```
 
 ## TO DO:
 1. Environment Variables for client
-2. Move client to other repo?
-
-
+2. Split the clients request function into smaller functions
+3. Move the algorithm parameters to a different json file?
 
 bx wsk action create ga_service --kind python:2 ga_service.zip
