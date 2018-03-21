@@ -52,7 +52,7 @@ Input parameters example:
 
 
 Output is the same as input with a new evolved population plus:
-```json
+```
  {
     'diversity' :
             {
@@ -136,17 +136,17 @@ python3 ga_client.py --help
 
 ## Results
 If the *--only-population* flag is set then it returns an array of objects which represent each individual with it's id, chromosome and fitness.
-```json
+```python
 [{'id': None, 'chromosome': [-3.0208012286451758, -1.9901786287762588, 0.4746940069424692], 'fitness': {'DefaultContext': -328.99633706375687, 'score': -328.99633706375687}}, {'id': None, 'chromosome': [-3.0208012286451758, -1.9901786287762588, 0.4746940069424692], 'fitness': {'DefaultContext': -328.99633706375687, 'score': -328.99633706375687}}]
 ```
 
 If the *--only-population* flag is not set then it returns an array of objects which contain the following keys:
-```
+```python
 [u'fopt', u'algorithm', u'best_individual', u'experiment', u'population_size', u'iterations', u'problem', u'id', u'best', u'population']
 ```
 
 The results of each iteration look like this:
-```
+```python
 [0, -422.3189885289348, [-2.3750799310197834, 0.26363257691378017, 1.9725786083712151], 17] -462.09
 [1, -450.63219848002547, [-2.3750799310197834, 2.8617458011276007, 1.9725786083712151], 16] -462.09
 [2, -450.63219848002547, [-2.3750799310197834, 2.8617458011276007, 1.9725786083712151], 20] -462.09
