@@ -2,11 +2,11 @@ import os
 import uuid
 import json
 import subprocess
-from argparse import ArgumentParser
 from string import Template
 import asyncio
 import aiohttp
 from aiohttp import BasicAuth
+from arguments import get_arguments
 
 """ Template for the whisk rest api. """
 whisk_rest_api = Template(
@@ -164,98 +164,6 @@ async def ga_action_request(args, i):
 
     data = json.loads(response['value'])
     responses[i] = data
-
-def get_arguments():
-    """ Gets the arguments given to the script.  """
-
-    parser = ArgumentParser(
-        description='Makes requests to ga_service using a whisk REST API.'
-    )
-
-    parser.add_argument(
-        '-v',
-        '--verbose',
-        action='store_true',
-        help='verbose output'
-    )
-    parser.add_argument(
-        '-b',
-        '--blocking',
-        action='store_true',
-        help='blocking mode'
-    )
-    parser.add_argument(
-        '-r',
-        '--requests',
-        type=int,
-        default=1,
-        help='number of requests (default 1)'
-    )
-    parser.add_argument(
-        '-o',
-        '--only-population',
-        action='store_true',
-        help='return only the population'
-    )
-    parser.add_argument(
-        '--timeout',
-        metavar='SECONDS',
-        type=int,
-        default=60,
-        help='seconds for timeout (default 60)'
-    )
-    parser.add_argument(
-        '--apihost',
-        metavar='APIHOST',
-        type=str,
-        help='whisk API HOST (default $APIHOST)'
-    )
-    parser.add_argument(
-        '--namespace',
-        type=str,
-        help='whisk NAMESPACE (default $NAMESPACE)'
-    )
-    parser.add_argument(
-        '-u',
-        '--auth',
-        metavar='KEY',
-        type=str,
-        help='authorization KEY (default wsk property)'
-    )
-    parser.add_argument(
-        '-i',
-        '--insecure',
-        action='store_true',
-        help='bypass certificate checking'
-    )
-    parser.add_argument(
-        '--function',
-        type=int,
-        default=3,
-        help='(default $FUNCTION or 3)'
-    )
-    parser.add_argument(
-        '--instance',
-        type=int,
-        default=1,
-        help='(default $INSTANCE or 1)'
-    )
-    parser.add_argument(
-        '--dim',
-        type=int,
-        default=3,
-        help='(default $DIM or 3)'
-    )
-    parser.add_argument(
-        '--population-size',
-        type=int,
-        default=20,
-        help='population size (default $POPULATION_SIZE or 20)'
-    )
-
-    parser.set_defaults(verbose=False, insecure=False)
-
-    return parser.parse_args()
 
 if __name__ == "__main__":
     """ Gets the arguments and makes the requests according to them. """
