@@ -1,6 +1,16 @@
 from argparse import ArgumentParser
+import os
+import subprocess
 
-def get_arguments():
+def get_auth():
+    """ Gets the authorization token. """
+
+    return subprocess.check_output(
+        'wsk property get --auth',
+        shell=True
+    ).split()[2].decode('utf-8')
+
+def get_args():
     """ Gets the arguments given to the script.  """
 
     parser = ArgumentParser(
@@ -11,6 +21,7 @@ def get_arguments():
         '-v',
         '--verbose',
         action='store_true',
+        default=False,
         help='verbose output'
     )
     parser.add_argument(
@@ -43,11 +54,13 @@ def get_arguments():
         '--apihost',
         metavar='APIHOST',
         type=str,
+        default=os.environ['APIHOST'],
         help='whisk API HOST (default $APIHOST)'
     )
     parser.add_argument(
         '--namespace',
         type=str,
+        default=os.environ['NAMESPACE'],
         help='whisk NAMESPACE (default $NAMESPACE)'
     )
     parser.add_argument(
@@ -55,39 +68,40 @@ def get_arguments():
         '--auth',
         metavar='KEY',
         type=str,
+        default=get_auth(),
         help='authorization KEY (default wsk property)'
     )
     parser.add_argument(
         '-i',
         '--insecure',
         action='store_true',
+        default=False,
         help='bypass certificate checking'
     )
     parser.add_argument(
         '--function',
         type=int,
-        default=3,
+        default='FUNCTION' in os.environ and int(os.environ['FUNCTION']) or 3,
         help='(default $FUNCTION or 3)'
     )
     parser.add_argument(
         '--instance',
         type=int,
-        default=1,
+        default='INSTANCE' in os.environ and int(os.environ['INSTANCE']) or 1,
         help='(default $INSTANCE or 1)'
     )
     parser.add_argument(
         '--dim',
         type=int,
-        default=3,
+        default='DIM' in os.environ and int(os.environ['DIM']) or 3,
         help='(default $DIM or 3)'
     )
     parser.add_argument(
         '--population-size',
         type=int,
-        default=20,
+        default='POPULATION_SIZE' in os.environ and
+        int(os.environ['POPULATION_SIZE']) or 20,
         help='population size (default $POPULATION_SIZE or 20)'
     )
-
-    parser.set_defaults(verbose=False, insecure=False)
 
     return parser.parse_args()
