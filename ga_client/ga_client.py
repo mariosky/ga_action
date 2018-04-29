@@ -8,7 +8,8 @@ from population import create_pop
 responses = []
 
 async def ga_action_request(args, i):
-    responses[i] = await get_handled_pop(args)
+    pop = create_pop(args)
+    responses[i] = await get_handled_pop(args, pop)
 
 if __name__ == "__main__":
     """ Gets the arguments and makes the requests according to them. """

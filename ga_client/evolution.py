@@ -2,7 +2,6 @@ from aiohttp import BasicAuth
 from aiohttp import ClientSession
 from asyncio import sleep
 from json import loads
-from population import create_pop
 from string import Template
 from util import Logger
 
@@ -11,7 +10,7 @@ whisk_rest_api = Template(
     '$APIHOST/api/v1/namespaces/$NAMESPACE/$ENDPOINT/$VALUE'
 )
 
-async def request_pop(args):
+async def evolve_pop(args, pop):
     """ Gets the population using blocking. """
 
     logger = Logger(args.verbose)
@@ -22,7 +21,7 @@ async def request_pop(args):
         ENDPOINT='actions',
         VALUE='gaService'
     )
-    EVOLUTION_PARAMETERS = create_pop(args)
+    EVOLUTION_PARAMETERS = pop
     auth = args.auth.split(':')
     AUTH = BasicAuth(auth[0], auth[1])
     BLOCKING = 'true' if args.blocking else 'false'
@@ -41,9 +40,9 @@ async def request_pop(args):
             logger.log('POST complete!')
             return await response.json()
 
-async def get_id(args):
+async def get_id(args, pop):
     """ Gets the id of a population using the OpenWhisk REST API. """
-    response = await request_pop(args)
+    response = await evolve_pop(args, pop)
     return response['activationId']
 
 async def get_pop(args, id):
@@ -81,8 +80,8 @@ async def get_pop(args, id):
 
     raise ValueError('Timeout exception.')
 
-async def get_handled_pop(args):
-    response = await request_pop(args)
+async def get_handled_pop(args, pop):
+    response = await evolve_pop(args, pop)
     if 'activationId' in response:
         return await get_pop(args, response['activationId'])
     else:
