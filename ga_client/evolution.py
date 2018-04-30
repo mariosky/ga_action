@@ -80,7 +80,7 @@ async def get_pop(args, id):
 
     raise ValueError('Timeout exception.')
 
-async def get_handled_pop(args, pop):
+async def evolve_handled_pop(args, pop):
     response = await evolve_pop(args, pop)
     if 'activationId' in response:
         return await get_pop(args, response['activationId'])

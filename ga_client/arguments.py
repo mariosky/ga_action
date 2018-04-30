@@ -103,5 +103,11 @@ def get_args():
         int(os.environ['POPULATION_SIZE']) or 20,
         help='population size (default $POPULATION_SIZE or 20)'
     )
+    parser.add_argument(
+        '--iterations',
+        type=int,
+        default=1,
+        help='iterations over population'
+    )
 
     return parser.parse_args()
