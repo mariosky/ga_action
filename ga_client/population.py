@@ -1,6 +1,6 @@
-from uuid import uuid1
+from evolution import evolution_parameters
 
-def create_sample(conf):
+def create_sample(parameters):
     """ Creates a sample for the evolution process. """
 
     import random
@@ -14,61 +14,20 @@ def create_sample(conf):
     toolbox = base.Toolbox()
     toolbox.register("attr_float", random.uniform, -5, 5)
     toolbox.register("individual", tools.initRepeat, creator.Individual,
-                          toolbox.attr_float, conf['problem']['dim'])
+                          toolbox.attr_float, parameters['problem']['dim'])
     toolbox.register("population", tools.initRepeat, list, toolbox.individual)
 
-    pop = toolbox.population(conf['population_size'])
+    pop = toolbox.population(parameters['population_size'])
     return [{"chromosome": ind[:], "id": None, "fitness": {"DefaultContext": 0.0}} for ind in pop]
 
-def create_pop(args):
+def create_population(settings):
     """ Creates a population for the evolution process. """
 
-    conf = evolution_conf(
-        args.function,
-        args.instance,
-        args.dim,
-        args.population_size
+    parameters = evolution_parameters(
+        settings.function,
+        settings.instance,
+        settings.dim,
+        settings.population_size
     )
-    conf['population'] = create_sample(conf)
-    return conf
-
-def evolution_conf(function=3, instance=1, dim=3, population_size=20):
-    """ Returns the evolution configuration. """
-
-    return {
-        'id': str(uuid1()),
-        'problem': {
-            'name': 'BBOB',
-            'function': function,
-            'instance': instance,
-            'search_space': [-5, 5],
-            'dim': dim,
-            'error': 1e-8
-        },
-        'population': [],
-        'population_size': population_size,
-        'experiment': {
-            'experiment_id': 'dc74efeb-9d64-11e7-a2bd-54e43af0c111',
-            'owner': 'mariosky',
-            'type': 'benchmark'
-        },
-        'algorithm': {
-            'name': 'GA',
-            'iterations': 5,
-            'selection': {
-                'type': 'tools.selTournament',
-                'tournsize': 12
-            },
-            'crossover': {
-                'type': 'cxTwoPoint',
-                'CXPB': [0, 0.2]
-            },
-            'mutation': {
-                'type': 'mutGaussian',
-                'mu': 0,
-                'sigma': 0.5,
-                'indpb' : 0.05,
-                'MUTPB':0.5
-            }
-        }
-    }
+    parameters['population'] = create_sample(parameters)
+    return parameters
