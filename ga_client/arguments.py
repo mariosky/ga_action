@@ -34,8 +34,8 @@ def get_args():
         '-r',
         '--requests',
         type=int,
-        default=1,
-        help='number of requests (default 1)'
+        default=2,
+        help='number of requests (default 2)'
     )
     parser.add_argument(
         '-o',

@@ -1,5 +1,3 @@
-from evolution import evolution_parameters
-
 def create_sample(parameters):
     """ Creates a sample for the evolution process. """
 
@@ -19,15 +17,3 @@ def create_sample(parameters):
 
     pop = toolbox.population(parameters['population_size'])
     return [{"chromosome": ind[:], "id": None, "fitness": {"DefaultContext": 0.0}} for ind in pop]
-
-def create_population(settings):
-    """ Creates a population for the evolution process. """
-
-    parameters = evolution_parameters(
-        settings.function,
-        settings.instance,
-        settings.dim,
-        settings.population_size
-    )
-    parameters['population'] = create_sample(parameters)
-    return parameters

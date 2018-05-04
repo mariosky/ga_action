@@ -1,8 +1,10 @@
-from aiohttp import BasicAuth
-from aiohttp import ClientSession
-from asyncio import sleep
 from json import loads
+from population import create_sample
+from requests import get
+from requests import post
+from requests.auth import HTTPBasicAuth
 from string import Template
+from time import sleep
 from util import Logger
 from uuid import uuid1
 
@@ -52,6 +54,18 @@ def evolution_parameters(function=3, instance=1, dim=3, population_size=20):
         }
     }
 
+def create_parameters(settings, population=None):
+    """ Creates the evolution parameters with a population. """
+
+    parameters = evolution_parameters(
+        settings.function,
+        settings.instance,
+        settings.dim,
+        settings.population_size
+    )
+    parameters['population'] = population or create_sample(parameters)
+    return parameters
+
 def get_request_data(settings, endpoint, value, json={}):
     """ Gets the request data. """
 
@@ -68,8 +82,8 @@ def get_request_data(settings, endpoint, value, json={}):
             'blocking': str(settings.blocking),
             'result': 'True'
         },
-        'auth':BasicAuth(auth[0], auth[1]),
-        'verify_ssl': not settings.insecure
+        'auth': HTTPBasicAuth(auth[0], auth[1]),
+        'verify': not settings.insecure
     }
 
 def crossover_migration(pop1, pop2, key = lambda p: p['fitness']['score']):
@@ -79,59 +93,57 @@ def crossover_migration(pop1, pop2, key = lambda p: p['fitness']['score']):
     pop2.sort(key=key)
     size = min(len(pop1), len(pop2))
 
-    cxpoint = round((size - 1) / 2)
+    cxpoint = int(size / 2)
 
-    pop1[cxpoint:] = pop2[:cxpoint]
+    pop1[cxpoint:] = pop2[:cxpoint + size % 2]
 
     return pop1
 
-async def request_evolution(settings, population):
+def request_evolution(settings, population):
     """ Gets the population using blocking. """
 
-    parameters = get_request_data(settings, 'actions', 'gaService', population)
+    data = get_request_data(settings, 'actions', 'gaService', population)
 
     logger = Logger(settings.verbose)
-    logger.log('POST request to ' + parameters['url'])
+    logger.log('POST request to ' + data['url'])
 
-    async with ClientSession() as session:
-        async with session.post(**parameters) as response:
-            logger.log('POST complete!')
-            return await response.json()
+    response = post(**data).json()
+    logger.log('POST complete!')
+    return response
 
-async def request_evolution_id(settings, population):
+def request_evolution_id(settings, population):
     """ Evolves a population and returns it's OpenWhisk activationid. """
 
-    response = await request_evolution(settings, population)
+    response = request_evolution(settings, population)
     return response['activationId']
 
-async def request_evolved(settings, id):
+def request_evolved(settings, id):
     """ Gets the population data with it's OpenWhisk activation id. """
 
-    parameters = get_request_data(settings, 'activations', id)
+    data = get_request_data(settings, 'activations', id)
 
     logger = Logger(settings.verbose)
     logger.log('Polling activationId ' + str(id))
 
     for _ in range(0, settings.timeout):
-        logger.log('GET request to ' + parameters['url'])
+        logger.log('GET request to ' + data['url'])
 
-        async with ClientSession() as session:
-            async with session.get(**parameters) as response:
-                logger.log('GET complete!')
-                response = await response.json()
+        response = get(**data).json()
+        logger.log('GET complete!')
 
-                if 'error' not in response:
-                    return loads(response['response']['result']['value'])
+        if 'error' not in response:
+            return loads(response['response']['result']['value'])
 
-                await sleep(1)
+        sleep(1)
 
     raise ValueError('Timeout exception.')
 
-async def evolve(settings, population):
+def evolve(settings, population):
     """ Evolves the population with the given settings. """
 
-    response = await request_evolution(settings, population)
+    response = request_evolution(settings, population)
+    print(response)
     if 'activationId' in response:
-        return await request_evolved(settings, response['activationId'])
+        return request_evolved(settings, response['activationId'])
     else:
         return loads(response['value'])

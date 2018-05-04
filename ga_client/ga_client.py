@@ -1,50 +1,72 @@
 from arguments import get_args
-from asyncio import gather
-from asyncio import get_event_loop
 from evolution import crossover_migration
 from evolution import evolve
-from population import create_population
+from evolution import request_evolution_id
+from evolution import request_evolved
+from evolution import create_parameters
+from goless import chan
+from goless import go
 
-responses = []
-populations = []
+# channels
+populations = chan()
+ids = chan()
+evolved = chan()
+migrated = chan()
 
-async def requests(settings):
-    """ Makes requests to evolve the populations. """
+def create_population_worker(settings):
+    """ Creates the amount of populations specified in the settings. """
 
-    for i in range(0, settings.iterations):
-        await gather(
-            *[request(settings, i) for i in range(0, settings.requests)]
+    for _ in range(0, settings.requests):
+        populations.send(create_parameters(settings))
+
+def evolution_id_worker(settings):
+    """ Evolves the populations and sends their ids to the ids channel. """
+
+    while True:
+        population = populations.recv()
+        id = request_evolution_id(settings, population)
+        ids.send(id)
+
+def evolved_worker(settings):
+    """ Gets the population and sends them to the evolved channel. """
+
+    while True:
+        id = ids.recv()
+        population = request_evolved(settings, id)
+        evolved.send(population)
+
+def migrate_worker(setting):
+    """ Migrates the populations and sends them to the migrated channel. """
+
+    population_a = None
+    while True:
+        population_a = population_a or evolved.recv()
+        population_b = evolved.recv()
+        population = crossover_migration(
+            population_a['population'],
+            population_b['population']
         )
-        for j in range(0, len(populations)):
-            populations[j]['population'] = crossover_migration(
-                populations[j]['population'],
-                populations[(j + 1) % len(populations)]['population']
-            )
+        population_a = population_b
+        parameters = create_parameters(settings, population)
+        go(populations.send, parameters)
+        migrated.send(parameters)
 
-async def request(settings, i):
-    """ Makes a request to evolve a population. """
+def print_worker(settings):
+    """ Prints the results. """
 
-    responses[i] = await evolve(
-        settings,
-        populations[i]
-    )
-    populations[i]['population'] = responses[i]['population']
+    for _ in range(0, settings.iterations * settings.requests):
+        population = migrated.recv()
+        if settings.only_population:
+            print(population['population'])
+        else:
+            print(population)
 
 if __name__ == "__main__":
-    """ Gets the settings and makes the requests according to them. """
+    # Gets the settings and makes the requests according to them using channels.
 
     settings = get_args()
-    responses = [None] * settings.requests
-    populations = [create_population(settings) for _ in responses]
-    loop = get_event_loop()
-    loop.run_until_complete(requests(settings))
-    loop.close()
-    if (settings.only_population):
-        population = [
-            individual
-            for response in responses
-            for individual in response['population']
-        ]
-        print(population)
-    else:
-        print(responses)
+    go(create_population_worker, settings)
+    go(evolution_id_worker, settings)
+    go(evolved_worker, settings)
+    go(migrate_worker, settings)
+    print_worker(settings)
