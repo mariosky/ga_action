@@ -81,58 +81,50 @@ Iterations Tuple:
 ## How to create the action in Vagrant
 
 First you log in to your vm
-```
+```shell
 vagrant ssh
 ```
 Clone the source
-```
+```shell
 git clone https://github.com/mariosky/ga_action
 ```
 Change directory to ga_service
-```
+```shell
 cd ga_service
 ```
 Generate the vitualenv directory
-```
+```shell
 docker run --rm -v "$PWD:/tmp" openwhisk/python2action sh -c "cd tmp; virtualenv virtualenv; source virtualenv/bin/activate; pip install -r requirements.txt;"
 ```
 Create the zip files with files needed
-```
+```shell
 zip -r ga_service.zip  __main__.py virtualenv ga_service.py bbobbenchmarks.py
 ```
 Create or Update the action
-```
+```shell
 wsk action create gaService --kind python:2 ga_service.zip
 wsk action update gaService --kind python:2 ga_service.zip
 ```
 Get the url
-```
+```shell
 wsk action get gaService --url
 ok: got action gaService
 https://192.168.33.13/api/v1/namespaces/guest/actions/gaService
 ```
 Get the auth data
-```
+```shell
 wsk property get --auth
 whisk auth		23bc46b1-71f6-4ed5-8c54-816aa4f8c502:123zO3xZCLrMN6v2BKK1dXYFpXlPkccOFqm12CdAsMgRU4VrNZ9lyGVCGuMDGIwP
 ```
 For updates with out new virtualenv
-```
+```shell
 git fetch
 ```
 
 ## Test from the host
 1. Again clone the code
-2. Create your virtualenv, pip install the *aiohttp* library (only needed for client)
+2. Create your virtualenv, pip install the *requests* library (only needed for client)
 3. Edit your ga_client
-
-## Using the client
-The client uses the *asyncio* library which handles asynchronous processes so it requires *python 3* to be executed. You can input different parameters for the script such as the number of request, verbose mode, timeouts, and algorithm specific parameters.
-
-To get a full list of the options you can run the command:
-```
-python3 ga_client.py --help
-```
 
 ## Results
 If the *--only-population* flag is set then it returns an array of objects which represent each individual with it's id, chromosome and fitness.
@@ -158,8 +150,9 @@ The results of each iteration look like this:
 ```
 
 ## TO DO:
-1. Environment Variables for client
-2. Split the clients request function into smaller functions
-3. Move the algorithm parameters to a different json file?
+1. Move the algorithm parameters to a different json file?
+2. Regis logs.
+3. Update documentation.
+4. Refactor.
 
 bx wsk action create ga_service --kind python:2 ga_service.zip
