@@ -4,4 +4,4 @@ It's a simple command line client which uses the OpenWhisk REST API from [ga\_se
 python ga_client.py --help
 ```
 
-This client creates a specified number of randomly generated populations and evolves them the number of times requested. The formula to calculate the number of evaluations is given by `requests * iterations`. After each evaluation it logs the population into the command line. A redis connection will be implemented in the future to store each result.
+This client creates a specified number of randomly generated populations and evolves them the number of times requested. The formula to calculate the number of evaluations is given by `requests * iterations`. After each evaluation it logs the population into the command line. A reddis connection is implemented through localhost on port 6379 to log the populations for further analysis.

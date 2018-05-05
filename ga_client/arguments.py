@@ -24,6 +24,14 @@ def get_args():
         default=False,
         help='verbose output'
     )
+
+    parser.add_argument(
+        '-l',
+        '--log',
+        action='store_true',
+        default=False,
+        help='log to redis'
+    )
     parser.add_argument(
         '-b',
         '--blocking',

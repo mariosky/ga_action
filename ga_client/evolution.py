@@ -1,11 +1,11 @@
 from json import loads
+from logging_tools import Logger
 from population import create_sample
 from requests import get
 from requests import post
 from requests.auth import HTTPBasicAuth
 from string import Template
 from time import sleep
-from util import Logger
 from uuid import uuid1
 
 """ Template for the whisk rest api. """

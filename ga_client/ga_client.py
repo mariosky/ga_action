@@ -1,17 +1,20 @@
 from arguments import get_args
+from evolution import create_parameters
 from evolution import crossover_migration
 from evolution import evolve
 from evolution import request_evolution_id
 from evolution import request_evolved
-from evolution import create_parameters
 from goless import chan
 from goless import go
+from logging_tools import log_to_redis_coco
+from logging_tools import log_to_redis_population
 
 # channels
 populations = chan()
 ids = chan()
 evolved = chan()
 migrated = chan()
+redis_logs = chan()
 
 def create_population_worker(settings):
     """ Creates the amount of populations specified in the settings. """
@@ -46,6 +49,7 @@ def migrate_worker(setting):
             population_a['population'],
             population_b['population']
         )
+        redis_logs.send(population_a)
         population_a = population_b
         parameters = create_parameters(settings, population)
         go(populations.send, parameters)
@@ -61,6 +65,17 @@ def print_worker(settings):
         else:
             print(population)
 
+def log_to_redis_worker(settings):
+    """ Logs to redis. """
+
+    if settings.log:
+        for _ in range(0, settings.iterations * settings.requests):
+            population = redis_logs.recv()
+            if settings.only_population:
+                log_to_redis_population(population)
+            else:
+                log_to_redis_coco(population)
+
 if __name__ == "__main__":
     # Gets the settings and makes the requests according to them using channels.
 
@@ -69,4 +84,5 @@ if __name__ == "__main__":
     go(evolution_id_worker, settings)
     go(evolved_worker, settings)
     go(migrate_worker, settings)
+    go(log_to_redis_worker, settings)
     print_worker(settings)
