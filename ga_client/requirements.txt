@@ -1,0 +1,13 @@
+certifi==2018.4.16
+cffi==1.10.1
+chardet==3.0.4
+deap==1.2.2
+gevent==1.2.2
+goless==0.7.2
+greenlet==0.4.12
+idna==2.6
+numpy==1.14.3
+readline==6.2.4.1
+redis==2.10.6
+requests==2.18.4
+urllib3==1.22

@@ -68,9 +68,9 @@ def print_worker(settings):
 def log_to_redis_worker(settings):
     """ Logs to redis. """
 
-    if settings.log:
-        for _ in range(0, settings.iterations * settings.requests):
-            population = redis_logs.recv()
+    for _ in range(0, settings.iterations * settings.requests):
+        population = redis_logs.recv()
+        if settings.log:
             if settings.only_population:
                 log_to_redis_population(population)
             else:
