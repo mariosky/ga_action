@@ -25,7 +25,7 @@ def create_population_worker(settings):
 def evolution_id_worker(settings):
     """ Evolves the populations and sends their ids to the ids channel. """
 
-    while True:
+    for _ in range(0, settings.iterations * settings.requests):
         population = populations.recv()
         id = request_evolution_id(settings, population)
         ids.send(id)
@@ -42,18 +42,19 @@ def migrate_worker(setting):
     """ Migrates the populations and sends them to the migrated channel. """
 
     population_a = None
+    population_b = None
     while True:
         population_a = population_a or evolved.recv()
-        population_b = evolved.recv()
+        population_b = evolved.recv() if population_b else population_a
         population = crossover_migration(
             population_a['population'],
             population_b['population']
         )
         redis_logs.send(population_a)
+        migrated.send(population_a)
         population_a = population_b
         parameters = create_parameters(settings, population)
         go(populations.send, parameters)
-        migrated.send(parameters)
 
 def print_worker(settings):
     """ Prints the results. """

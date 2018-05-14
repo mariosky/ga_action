@@ -1,0 +1,32 @@
+platform|backend|benchmark|time
+--------|-------|---------|----
+pypy|stackless|2 requests 2 iterations| 10.00s
+python|stackless|2 requests 2 iterations| 1.05s
+python3|stackless|2 requests 2 iterations| 0.39s
+pypy|gevent|2 requests 2 iterations| 8.88s
+python|gevent|2 requests 2 iterations| 9.21s
+python3|gevent|2 requests 2 iterations| 8.04s
+pypy|stackless|3 requests 3 iterations| 19.27s
+python|stackless|3 requests 3 iterations| 0.11s
+python3|stackless|3 requests 3 iterations| 0.32s
+pypy|gevent|3 requests 3 iterations| 20.82s
+python|gevent|3 requests 3 iterations| 23.66s
+python3|gevent|3 requests 3 iterations| 25.39s
+pypy|stackless|4 requests 4 iterations| 38.02s
+python|stackless|4 requests 4 iterations| 1.10s
+python3|stackless|4 requests 4 iterations| 1.00s
+pypy|gevent|4 requests 4 iterations| 39.01s
+python|gevent|4 requests 4 iterations| 45.93s
+python3|gevent|4 requests 4 iterations| 36.54s
+pypy|stackless|5 requests 5 iterations| 74.57s
+python|stackless|5 requests 5 iterations| 1.09s
+python3|stackless|5 requests 5 iterations| 1.04s
+pypy|gevent|5 requests 5 iterations| 57.89s
+python|gevent|5 requests 5 iterations| 69.74s
+python3|gevent|5 requests 5 iterations| 61.17s
+pypy|stackless|6 requests 6 iterations| 95.63s
+python|stackless|6 requests 6 iterations| 0.57s
+python3|stackless|6 requests 6 iterations| 0.49s
+pypy|gevent|6 requests 6 iterations| 100.99s
+python|gevent|6 requests 6 iterations| 94.52s
+python3|gevent|6 requests 6 iterations| 99.20s
