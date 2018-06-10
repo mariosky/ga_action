@@ -1,0 +1,19 @@
+# basic authorization admin:secret on base64
+POST http://localhost:5000/api/v1/namespaces/guest/actions/popService
+Authorization: Basic YWRtaW46c2VjcmV0
+Content-Type: application/json
+{
+        "population_size": 5,
+        "problem": {
+                 "dim": 2
+        }
+}
+# GET http://localhost:5000/api/v1/namespaces/guest/activations/
+GET http://localhost:5000/api/v1/namespaces/guest/activations/
+Authorization: Basic YWRtaW46c2VjcmV0
+#
+POST http://localhost:5000/api/v1/namespaces/guest/actions/popService
+Authorization: Basic YWRtaW46c2VjcmV0
+Content-Type: application/json
+{
+}

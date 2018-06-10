@@ -1,4 +1,4 @@
-# ga_client
+# py_client
 It's a simple command line client which uses the OpenWhisk REST API from [ga\_service](../ga\_service) to evolve randomly generated populations. It uses [goless channels](http://goless.readthedocs.io/en/latest/) as a way to transfer data from one function to another.
 
 This client creates a specified number of randomly generated populations and evolves them the number of times requested. The formula to calculate the number of evaluations is given by `requests * iterations`. After each evaluation it logs the population into the command line. A redis connection is implemented through localhost on port 6379 to log the populations for further analysis.
