@@ -5,7 +5,7 @@ gevent==1.2.2
 goless==0.7.2
 greenlet==0.4.12
 idna==2.6
-numpy==1.14.3
+numpy==1.22.0
 readline==6.2.4.1
 redis==2.10.6
 requests==2.18.4
